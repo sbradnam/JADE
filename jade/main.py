@@ -96,9 +96,9 @@ class Session:
         self.path_test = os.path.join(jade_root, 'Tests')
         # Test level 2 
 #        self.path_run = os.path.join(self.path_test, 'MCNP simulations')
-        self.path_run_MCNP = os.path.join(self.path_test, 'MCNP simulations')
-		self_path_run_Serpent = os.path.join(self.path_test, 'Serpent simulations')
-		self.path_run_OpenMC = os.path.join(self.path_test, 'OpenMC simulations')
+        self.path_run = os.path.join(self.path_test, 'MCNP simulations')
+        self.path_run_Serpent = os.path.join(self.path_test, 'Serpent simulations')
+        self.path_run_OpenMC = os.path.join(self.path_test, 'OpenMC simulations')
         self.path_pp = os.path.join(self.path_test, 'Post-Processing')
         # Test level 3
         self.path_single = os.path.join(self.path_pp, 'Single Libraries')
