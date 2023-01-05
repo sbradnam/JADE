@@ -229,11 +229,24 @@ class SphereOutput(BenchmarkOutput):
         template = os.path.join(os.getcwd(), 'templates', 'Sphere_single.xlsx')
         outpath = os.path.join(self.excel_path, 'Sphere_single_' +
                                self.lib+'.xlsx')
+							   
+		
         # Get results
         results = []
         errors = []
         stat_checks = []
         outputs = {}
+		
+		Serpentresults = []
+		Serpenterrors=[]
+		Serpentstat_checks = []
+		Serpentoutputs = {}
+		
+		OpenMCresults = []
+		OpenMCerrors = []
+		OpenMCstat_checks = []
+		OpenMCoutputs = {}
+	
         for folder in os.listdir(self.test_path):
             results_path = os.path.join(self.test_path, folder)
             pieces = folder.split('_')
@@ -291,13 +304,13 @@ class SphereOutput(BenchmarkOutput):
         # Write excel
         ex = SphereExcelOutputSheet(template, outpath)
         # Results
-        ex.insert_df(9, 2, results, 0)
+        ex.insert_df(9, 2, results, 0)          
         ex.insert_df(9, 2, errors, 1)
         ex.insert_df(9, 2, stat_checks, 2)
         lib_name = self.session.conf.get_lib_name(self.lib)
 #        ex.wb.sheets[0].range('D1').value = lib_name
         ex.save()
-
+		
     def pp_excel_comparison(self):
         """
         Compute the data and create the excel for all libraries comparisons.
@@ -693,6 +706,12 @@ class SphereMCNPoutput(MCNPoutput):
                     results.append(masked['Value'].values[0])
 
         return results, columns
+
+class SphereSerpentOutput(SerpentOutput)
+    pass
+
+class SphereOpenMCOutput(OpenMCOutput)
+    pass
 
 
 class SphereSDDRoutput(SphereOutput):

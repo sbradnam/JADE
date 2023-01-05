@@ -75,7 +75,7 @@ def insert_df(startrow, startcolumn, df, ws, header=True):
                 #ws.range((startrow, column)).value = value
             except (AttributeError, ValueError) as e:
                 print(e)
-                print('Warning! header not printes: column,value',
+                print('Warning! header not printed: column,value',
                       column, value)
         startrow = startrow+1
 

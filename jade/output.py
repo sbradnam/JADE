@@ -185,9 +185,12 @@ class BenchmarkOutput(AbstractOutput):
         else:
             self.single = True  # Indicator for single or comparison
             self.lib = str(lib)  # In case of 1-item list
+			
             self.test_path = os.path.join(session.path_run, lib, testname)
-
-            # Generate library output path
+            self.test_path_Serpent = os.path.join(session.path_run_Serpent, lib, testname)
+			self.test_path_OpenMC = os.path.join(session.path_run_OpenMC, lib, testname)
+			
+            # Generate library output path 
             out = os.path.join(session.path_single, lib)
             if not os.path.exists(out):
                 os.mkdir(out)
@@ -196,15 +199,33 @@ class BenchmarkOutput(AbstractOutput):
             if os.path.exists(out):
                 shutil.rmtree(out)
             os.mkdir(out)
-            excel_path = os.path.join(out, 'Excel')
-            atlas_path = os.path.join(out, 'Atlas')
-            raw_path = os.path.join(out, 'Raw Data')
-            os.mkdir(excel_path)
-            os.mkdir(atlas_path)
-            os.mkdir(raw_path)
-            self.excel_path = excel_path
-            self.raw_path = raw_path
-            self.atlas_path = atlas_path
+			
+			out=os.path.join(out,testname, 'MCNP')
+			outSerpent=os.path.join(out,testname, 'Serpent')
+			outOpenMC=os.path.join(out,testname, 'OpenMC')
+			
+			os.mkdir(outMCNP)
+			os.mkdir(outSerpent)
+			os.mkdir(outOpenMC)
+			
+            #excel_path = os.path.join(out, 'Excel')
+            #atlas_path = os.path.join(out, 'Atlas')
+            #raw_path = os.path.join(out, 'Raw Data')
+            #os.mkdir(excel_path)
+            #os.mkdir(atlas_path)
+            #os.mkdir(raw_path)
+            #self.excel_path = excel_path
+            #self.raw_path = raw_path
+            #self.atlas_path = atlas_path
+             
+			excel_path_MCNP= os.path.join(outMCNP, 'Excel')
+			atlas_path_MCNP = os.path.join(outSerpent, 'Atlas'
+			raw_path_MCNP = os.path.join(out, 'Raw Data')
+
+			excel_path_MCNP= os.path.join(outMCNP, 'Excel')
+			atlas_path_MCNP = os.path.join(outSerpent, 'Atlas'
+			raw_path_MCNP = os.path.join(out, 'Raw Data')			
+			
 
     def single_postprocess(self):
         """
