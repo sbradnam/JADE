@@ -46,11 +46,12 @@ class SphereOutput(BenchmarkOutput):
         super().__init__(lib, testname, session)
 
         # Load the settings for zaids and materials
+        print(self.cnf_path)
         mat_path = os.path.join(self.cnf_path, 'MaterialsSettings.csv')
-        self.mat_settings = pd.read_csv(mat_path, sep=';').set_index('Symbol')
+        self.mat_settings = pd.read_csv(mat_path, sep=',').set_index('Symbol')
 
         zaid_path = os.path.join(self.cnf_path, 'ZaidSettings.csv')
-        self.zaid_settings = pd.read_csv(zaid_path, sep=';').set_index('Z')
+        self.zaid_settings = pd.read_csv(zaid_path, sep=',').set_index('Z')
 
     def single_postprocess(self):
         """
@@ -67,7 +68,7 @@ class SphereOutput(BenchmarkOutput):
         print(' Dumping Raw Data...')
         self.print_raw()
         print(' Generating plots...')
-        outpath = os.path.join(self.atlas_path, 'tmp')
+        outpath = os.path.join(self.atlas_path_MCNP, 'tmp')
         os.mkdir(outpath)
         self._generate_single_plots(outpath)
         print(' Single library post-processing completed')
@@ -125,7 +126,7 @@ class SphereOutput(BenchmarkOutput):
 
         """
         # Printing Atlas
-        template = os.path.join(self.code_path, 'templates',
+        template = os.path.join(self.code_path, 'Atlus_Templates',
                                 'AtlasTemplate.docx')
         if self.single:
             name = self.lib
@@ -134,7 +135,7 @@ class SphereOutput(BenchmarkOutput):
 
         atlas = at.Atlas(template, 'Sphere '+name)
         atlas.build(outpath, self.session.lib_manager, self.mat_settings)
-        atlas.save(self.atlas_path)
+        atlas.save(self.atlas_path_MCNP)
         # Remove tmp images
         shutil.rmtree(outpath)
 
@@ -226,16 +227,34 @@ class SphereOutput(BenchmarkOutput):
         None.
 
         """
-        template = os.path.join(os.getcwd(), 'templates', 'Sphere_single.xlsx')
-        outpath = os.path.join(self.excel_path, 'Sphere_single_' +
-                               self.lib+'.xlsx')
+        template = os.path.join(os.getcwd(), 'Atlus_Templates', 'Sphere_single.xlsx')
+#        outpath = os.path.join(self.excel_path, 'Sphere_single_' +
+#                               self.lib+'.xlsx')
+        outpathMCNP = os.path.join(self.excel_path_MCNP, 'Sphere_single_' +
+                               self.lib+ '_MCNP' + '.xlsx') 
+        outpathSerpent = os.path.join(self.excel_path_MCNP, 'Sphere_single_' +
+                               self.lib+ '_Serpent' + '.xlsx')                             
+        outpathOpenMC = os.path.join(self.excel_path_MCNP, 'Sphere_single_' +
+                               self.lib+ '_OpenMC' + '.xlsx')                                  
+        
         # Get results
         results = []
         errors = []
         stat_checks = []
         outputs = {}
-        for folder in os.listdir(self.test_path):
-            results_path = os.path.join(self.test_path, folder)
+        
+        Serpentresults = []
+        Serpenterrors=[]
+        Serpentstat_checks = []
+        Serpentoutputs = {}
+        
+        OpenMCresults = []
+        OpenMCerrors = []
+        OpenMCstat_checks = []
+        OpenMCoutputs = {}
+        
+        for folder in os.listdir(self.test_path_MCNP):
+            results_path = os.path.join(self.test_path_MCNP, folder)
             pieces = folder.split('_')
             # Get zaid
             zaidnum = pieces[-2]
@@ -289,15 +308,15 @@ class SphereOutput(BenchmarkOutput):
         self.stat_checks = stat_checks
 
         # Write excel
-        ex = SphereExcelOutputSheet(template, outpath)
+        ex = SphereExcelOutputSheet(template, outpathMCNP)
         # Results
-        ex.insert_df(9, 2, results, 0)
+        ex.insert_df(9, 2, results, 0)          
         ex.insert_df(9, 2, errors, 1)
         ex.insert_df(9, 2, stat_checks, 2)
         lib_name = self.session.conf.get_lib_name(self.lib)
 #        ex.wb.sheets[0].range('D1').value = lib_name
         ex.save()
-
+        
     def pp_excel_comparison(self):
         """
         Compute the data and create the excel for all libraries comparisons.
@@ -471,7 +490,7 @@ class SphereOutput(BenchmarkOutput):
 
     def print_raw(self):
         for key, data in self.raw_data.items():
-            file = os.path.join(self.raw_path, key+'.csv')
+            file = os.path.join(self.raw_path_MCNP, key+'.csv')
             data.to_csv(file, header=True, index=False)
 
 
@@ -693,6 +712,12 @@ class SphereMCNPoutput(MCNPoutput):
                     results.append(masked['Value'].values[0])
 
         return results, columns
+
+class SphereSerpentOutput():
+    pass
+
+class SphereOpenMCOutput():
+    pass
 
 
 class SphereSDDRoutput(SphereOutput):

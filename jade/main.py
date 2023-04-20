@@ -94,8 +94,11 @@ class Session:
         self.path_quality = os.path.join(jade_root, 'Quality')
         # Test level 1
         self.path_test = os.path.join(jade_root, 'Tests')
-        # Test level 2
+        # Test level 2 
         self.path_run = os.path.join(self.path_test, 'Simulations')
+#        self.path_run = os.path.join(self.path_test, 'MCNP simulations')
+#        self.path_run_Serpent = os.path.join(self.path_test, 'Serpent simulations')
+#        self.path_run_OpenMC = os.path.join(self.path_test, 'OpenMC simulations')
         self.path_pp = os.path.join(self.path_test, 'Post-Processing')
         # Test level 3
         self.path_single = os.path.join(self.path_pp, 'Single_Libraries')
@@ -122,7 +125,8 @@ class Session:
         self.path_exp_res = os.path.join(jade_root, 'Experimental_Results')
         # Benchmark inputs
         self.path_inputs = os.path.join(jade_root, 'Benchmarks_Inputs')
-
+        # Atlus templates
+        self.path_inputs = os.path.join(jade_root, 'Atlus_Templates')
         # Copy default settings if it is the first initialization
         if not os.path.exists(self.path_cnf):
             print(FIRST_INITIALIZATION)
@@ -137,6 +141,9 @@ class Session:
             files = os.path.join(code_root, 'install_files', 'Experimental_Results')
             shutil.copytree(files, self.path_exp_res)
 
+            # Copy atlas templates folder
+            files = os.path.join(code_root, 'install_files', 'Atlus_Templates')
+            shutil.copytree(files, self.path_exp_res)
             # the application needs to be closed
             sys.exit()
 

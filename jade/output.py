@@ -185,9 +185,16 @@ class BenchmarkOutput(AbstractOutput):
         else:
             self.single = True  # Indicator for single or comparison
             self.lib = str(lib)  # In case of 1-item list
-            self.test_path = os.path.join(session.path_run, lib, testname)
-
-            # Generate library output path
+            
+            self.test_path_MCNP = os.path.join(session.path_run, lib, testname, "mcnp")
+            self.test_path_Serpent = os.path.join(session.path_run, lib, testname, "serpent")
+            self.test_path_OpenMC = os.path.join(session.path_run, lib, testname, "openmc")
+        
+            #self.test_path_MCNP = os.path.join(session.path_run, lib, testname)
+            #self.test_path_Serpent = os.path.join(session.path_run_Serpent, lib, testname)
+            #self.test_path_OpenMC = os.path.join(session.path_run_OpenMC, lib, testname)
+            
+            # Generate library output path 
             out = os.path.join(session.path_single, lib)
             if not os.path.exists(out):
                 os.mkdir(out)
@@ -196,15 +203,54 @@ class BenchmarkOutput(AbstractOutput):
             if os.path.exists(out):
                 shutil.rmtree(out)
             os.mkdir(out)
-            excel_path = os.path.join(out, 'Excel')
-            atlas_path = os.path.join(out, 'Atlas')
-            raw_path = os.path.join(out, 'Raw Data')
-            os.mkdir(excel_path)
-            os.mkdir(atlas_path)
-            os.mkdir(raw_path)
-            self.excel_path = excel_path
-            self.raw_path = raw_path
-            self.atlas_path = atlas_path
+            
+            outMCNP=os.path.join(out, 'MCNP')
+            outSerpent=os.path.join(out,'Serpent')
+            outOpenMC=os.path.join(out, 'OpenMC')
+            
+            os.mkdir(outMCNP)
+            os.mkdir(outSerpent)
+            os.mkdir(outOpenMC)
+            
+            #excel_path = os.path.join(out, 'Excel')
+            #atlas_path = os.path.join(out, 'Atlas')
+            #raw_path = os.path.join(out, 'Raw Data')
+            #os.mkdir(excel_path)
+            #os.mkdir(atlas_path)
+            #os.mkdir(raw_path)
+            #self.excel_path = excel_path
+            #self.raw_path = raw_path
+            #self.atlas_path = atlas_path
+             
+            excel_path_MCNP= os.path.join(outMCNP, 'Excel')
+            atlas_path_MCNP = os.path.join(outMCNP, 'Atlas')
+            raw_path_MCNP = os.path.join(outMCNP, 'Raw Data')
+            os.mkdir(excel_path_MCNP)
+            os.mkdir(atlas_path_MCNP)
+            os.mkdir(raw_path_MCNP)
+            self.excel_path_MCNP = excel_path_MCNP
+            self.raw_path_MCNP = raw_path_MCNP
+            self.atlas_path_MCNP = atlas_path_MCNP
+            
+            excel_path_Serpent = os.path.join(outSerpent, 'Excel')
+            atlas_path_Serpent = os.path.join(outSerpent, 'Atlas')
+            raw_path_Serpent = os.path.join(outSerpent, 'Raw Data')  
+            os.mkdir(excel_path_Serpent)
+            os.mkdir(atlas_path_Serpent)
+            os.mkdir(raw_path_Serpent)
+            self.excel_path_Serpent = excel_path_Serpent
+            self.raw_path_Serpent = raw_path_Serpent
+            self.atlas_path_Serpent = atlas_path_Serpent        
+
+            excel_path_OpenMC= os.path.join(outOpenMC, 'Excel')
+            atlas_path_OpenMC = os.path.join(outOpenMC, 'Atlas')
+            raw_path_OpenMC = os.path.join(outOpenMC, 'Raw Data') 
+            os.mkdir(excel_path_OpenMC)
+            os.mkdir(atlas_path_OpenMC)
+            os.mkdir(raw_path_OpenMC)   
+            self.excel_path_OpenMC = excel_path_OpenMC
+            self.raw_path_OpenMC = raw_path_OpenMC
+            self.atlas_path_OpenMC = atlas_path_OpenMC          
 
     def single_postprocess(self):
         """
@@ -229,7 +275,7 @@ class BenchmarkOutput(AbstractOutput):
         atl_cnf.set_index('Tally', inplace=True)
 
         # Printing Atlas
-        template = os.path.join(self.code_path, 'templates',
+        template = os.path.join(self.code_path, 'Atlus_Templates',
                                 'AtlasTemplate.docx')
         atlas = at.Atlas(template, self.testname+' '+self.lib)
 
@@ -326,7 +372,7 @@ class BenchmarkOutput(AbstractOutput):
         atl_cnf.set_index('Tally', inplace=True)
 
         # Printing Atlas
-        template = os.path.join(self.code_path, 'templates',
+        template = os.path.join(self.code_path, 'Atlus_Templates',
                                 'AtlasTemplate.docx')
 
         atlas = at.Atlas(template, self.testname+' '+self.name)
@@ -452,7 +498,7 @@ class BenchmarkOutput(AbstractOutput):
 
         # Open the excel file
         name = 'Generic_single.xlsx'
-        template = os.path.join(os.getcwd(), 'templates', name)
+        template = os.path.join(os.getcwd(), 'Atlus_Templates', name)
         outpath = os.path.join(self.excel_path, self.testname + '_' +
                                self.lib+'.xlsx')
         ex = ExcelOutputSheet(template, outpath)
@@ -624,7 +670,7 @@ class BenchmarkOutput(AbstractOutput):
 
         # Open the excel file
         name_tag = 'Generic_comparison.xlsx'
-        template = os.path.join(os.getcwd(), 'templates', name_tag)
+        template = os.path.join(os.getcwd(), 'Atlus_Templates', name_tag)
 
         mcnp_outputs = {}
         iteration = 0
