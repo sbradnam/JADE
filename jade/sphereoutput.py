@@ -578,6 +578,7 @@ class SphereMCNPoutput(MCNPoutput):
         dftotal = pd.DataFrame(rowstotal, columns=['Tally N.',
                                                    'Tally Description',
                                                    'Value', 'Error'])
+        print(df)
         return df, dftotal
 
     def get_single_excel_data(self):

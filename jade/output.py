@@ -37,6 +37,7 @@ from jade.meshtal import Meshtal
 import pickle
 import sys
 import abc
+import openpyxl
 
 # RED color
 CRED = '\033[91m'
@@ -130,6 +131,7 @@ class BenchmarkOutput(AbstractOutput):
         self.code_path = os.getcwd()  # path to code
         self.state = session.state
         self.session = session
+        self.config = session.config
 
         # Read specific configuration
         cnf_path = os.path.join(session.path_cnf, testname+'.xlsx')
@@ -145,7 +147,7 @@ class BenchmarkOutput(AbstractOutput):
             self.lib = lib
             couples = []
             tp = os.path.join(session.path_run, lib[0], testname)
-            self.test_path = {lib[0]: tp}
+            self.test_path_MCNP = {lib[0]: tp}
             refname = session.conf.get_lib_name(lib[0])
             name = refname
             dirname = lib[0]
@@ -157,7 +159,7 @@ class BenchmarkOutput(AbstractOutput):
                 dirname = dirname+'_Vs_'+library
                 couples.append((lib[0], library, name_couple))
                 tp = os.path.join(session.path_run, library, testname)
-                self.test_path[library] = tp
+                self.test_path_MCNP[library] = tp
 
             self.name = name
             # Generate library output path
@@ -188,7 +190,7 @@ class BenchmarkOutput(AbstractOutput):
             
             self.test_path_MCNP = os.path.join(session.path_run, lib, testname, "mcnp")
             self.test_path_Serpent = os.path.join(session.path_run, lib, testname, "serpent")
-            self.test_path_OpenMC = os.path.join(session.path_run, lib, testname, "openmc")
+            self.test_path_OpenMC = os.path.join(session.path_run, lib, testname, "openMC")
         
             #self.test_path_MCNP = os.path.join(session.path_run, lib, testname)
             #self.test_path_Serpent = os.path.join(session.path_run_Serpent, lib, testname)
@@ -204,10 +206,11 @@ class BenchmarkOutput(AbstractOutput):
                 shutil.rmtree(out)
             os.mkdir(out)
             
-            outMCNP=os.path.join(out, 'MCNP')
-            outSerpent=os.path.join(out,'Serpent')
-            outOpenMC=os.path.join(out, 'OpenMC')
+            outMCNP=os.path.join(out, 'mcnp')
+            outSerpent=os.path.join(out,'serpent')
+            outOpenMC=os.path.join(out, 'openmc')
             
+
             os.mkdir(outMCNP)
             os.mkdir(outSerpent)
             os.mkdir(outOpenMC)
@@ -499,13 +502,13 @@ class BenchmarkOutput(AbstractOutput):
         # Open the excel file
         name = 'Generic_single.xlsx'
         template = os.path.join(os.getcwd(), 'Atlus_Templates', name)
-        outpath = os.path.join(self.excel_path, self.testname + '_' +
+        outpath = os.path.join(self.excel_path_MCNP, self.testname + '_' +
                                self.lib+'.xlsx')
         ex = ExcelOutputSheet(template, outpath)
         # Get results
         # results = []
         # errors = []
-        results_path = self.test_path
+        results_path = self.test_path_MCNP
 
         # Get mfile and outfile and possibly meshtal file
         meshtalfile = None
@@ -686,7 +689,7 @@ class BenchmarkOutput(AbstractOutput):
                 to_read = [tarlib]
 
             for lib in to_read:
-                results_path = self.test_path[lib]
+                results_path = self.test_path_MCNP[lib]
 
                 # Get mfile and outfile and possibly meshtal file
                 meshtalfile = None
@@ -1027,8 +1030,9 @@ class ExcelOutputSheet:
         self.outpath = outpath  # Path to the excel file
         # Open template
         shutil.copy(template, outpath)
-        self.app = xw.App(visible=False)
-        self.wb = self.app.books.open(outpath)
+        #self.app = xw.App(visible=False)
+        #self.wb = self.app.books.open(outpath)
+        self.wb=openpyxl.load_workbook(filename=outpath)
         # The first open row in current ws
         self.free_row = self._starting_free_row
         self.ws_free_rows = {}
